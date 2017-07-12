@@ -2,12 +2,14 @@ package com.github.seijuro.kafka.common.loop;
 
 
 import org.apache.kafka.clients.consumer.*;
+import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.common.KafkaException;
 import org.apache.kafka.common.errors.WakeupException;
 
 import java.util.*;
 
 /**
- * Created by sogiro
+ * Created by seijuro
  */
 public abstract class SkeletonConsumerLoop<K, V>  extends AbsLoop {
     /**
@@ -31,8 +33,6 @@ public abstract class SkeletonConsumerLoop<K, V>  extends AbsLoop {
 
         this.props = props;
         this.topics = topics;
-
-        this.consumer = new KafkaConsumer(this.props);
     }
 
     public void prettyPrint(ConsumerRecord<K, V> record) {
@@ -43,8 +43,33 @@ public abstract class SkeletonConsumerLoop<K, V>  extends AbsLoop {
         System.out.println(String.format("[Thread : %d] %s", this.id(), message));
     }
 
+    /**
+     * create Kafka consumer.
+     *
+     * @throws KafkaException
+     */
+    protected void createConsumer() throws KafkaException {
+        final int retryMax = retryMax();
+
+        assert (retryMax >= 1);
+        int index = 1;
+
+        do {
+            try {
+                this.consumer = new KafkaConsumer<K, V>(this.props);
+                break;
+            }
+            catch (KafkaException excp) {
+                if (index == retryMax) {
+                    throw excp;
+                }
+            }
+        } while (index++ < retryMax);
+    }
+
     @Override
     public void init() {
+        createConsumer();
     }
 
     protected void process(ConsumerRecords<K, V> records) {

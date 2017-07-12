@@ -1,8 +1,12 @@
 package com.github.seijuro.kafka.common.loop;
 
 
+import org.apache.commons.lang3.time.DateUtils;
+import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.common.KafkaException;
+import org.apache.kafka.common.config.ConfigException;
 
 import java.util.LinkedList;
 import java.util.Properties;
@@ -44,8 +48,35 @@ public abstract class SkeletonProducerLoop<K, V> extends AbsLoop {
         return this.producer;
     }
 
+    /**
+     * create Kafka producer
+     *
+     * @return
+     */
+    protected boolean createProducer() throws KafkaException {
+        final int retryMax = retryMax();
+
+        assert (retryMax >= 1);
+        int index = 1;
+
+        do {
+            try {
+                this.producer = new KafkaProducer<K, V>(this.props);
+                break;
+            }
+            catch (KafkaException excp) {
+                if (index == retryMax) {
+                    throw excp;
+                }
+            }
+        } while (index++ < retryMax);
+
+        return true;
+    }
+
     @Override
     public void init() throws Exception {
+        createProducer();
     }
 
     @Override
@@ -76,17 +107,12 @@ public abstract class SkeletonProducerLoop<K, V> extends AbsLoop {
      * Runntable Interface method
      */
     public void run() {
-        System.out.println("Properties : " + this.props);
-
-        this.producer = new KafkaProducer<K, V>(this.props);
-
         do {
-            int counnt = 0;
             Queue<ProducerRecord<K, V>> messages = read();
 
             assert (messages != null);
 
-            counnt = messages.size();
+            int count = messages.size();
 
             for (ProducerRecord<K, V> record = messages.poll(); record != null; record = messages.poll()) {
                 send(record);
@@ -95,7 +121,7 @@ public abstract class SkeletonProducerLoop<K, V> extends AbsLoop {
             messages.clear();
             messages = null;
 
-            sent(counnt);
+            sent(count);
         } while (isRunning());
 
         release();

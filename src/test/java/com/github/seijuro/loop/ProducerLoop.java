@@ -1,4 +1,4 @@
-package com.github.seijuro;
+package com.github.seijuro.loop;
 
 import com.github.seijuro.kafka.common.loop.SkeletonProducerLoop;
 import org.apache.commons.lang3.time.DateUtils;

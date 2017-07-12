@@ -10,7 +10,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Created by sogiro
+ * Created by seijuro
  */
 public class LoopExecutorServiceWrap {
     protected static final long DEFAULT_TERMINATE_WAIT_MILLIS = DateUtils.MILLIS_PER_SECOND * 5;
