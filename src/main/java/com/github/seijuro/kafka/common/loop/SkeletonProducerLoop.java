@@ -53,7 +53,7 @@ public abstract class SkeletonProducerLoop<K, V> extends AbsLoop {
      *
      * @return
      */
-    protected boolean createProducer() throws KafkaException {
+    protected void createProducer() throws KafkaException {
         final int retryMax = retryMax();
 
         assert (retryMax >= 1);
@@ -70,8 +70,6 @@ public abstract class SkeletonProducerLoop<K, V> extends AbsLoop {
                 }
             }
         } while (index++ < retryMax);
-
-        return true;
     }
 
     @Override
