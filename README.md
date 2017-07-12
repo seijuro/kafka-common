@@ -12,3 +12,19 @@
 4. Producer supply methods such as init/shutdown/release, read/send/sent
 5. Consumer supply methods such as init/shutdown/release, process
 6. Execute your producer or consumer using LoopExecutorServiceWrap.
+
+# Defendencis
+
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.4</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.kafka</groupId>
+            <artifactId>kafka-clients</artifactId>
+            <version>0.10.2.1</version>
+        </dependency>
+    </dependencies>
