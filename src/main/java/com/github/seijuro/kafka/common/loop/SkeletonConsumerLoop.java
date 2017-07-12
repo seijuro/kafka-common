@@ -1,4 +1,4 @@
-package com.github.sogiro.kafka.common.loop;
+package com.github.seijuro.kafka.common.loop;
 
 
 import org.apache.kafka.clients.consumer.*;
@@ -9,13 +9,10 @@ import java.util.*;
 /**
  * Created by sogiro
  */
-public class ConsumerLoop<K, V>  implements Runnable {
+public abstract class SkeletonConsumerLoop<K, V>  extends AbsLoop {
     /**
      * Instance Properties
      */
-    protected boolean running = true;
-
-    protected int threadId;
     protected List<String> topics;
     protected KafkaConsumer<K, V> consumer;
     protected Properties props;
@@ -26,11 +23,12 @@ public class ConsumerLoop<K, V>  implements Runnable {
      * @param id
      * @param topics\
      */
-    public ConsumerLoop(
+    public SkeletonConsumerLoop(
             int id,
             Properties props,
             List<String> topics) {
-        this.threadId = id;
+        super(id);
+
         this.props = props;
         this.topics = topics;
 
@@ -44,22 +42,27 @@ public class ConsumerLoop<K, V>  implements Runnable {
     }
 
     public void prettyPrint(String message) {
-        System.out.println(String.format("[Thread : %d] %s", this.threadId, message));
+        System.out.println(String.format("[Thread : %d] %s", this.id(), message));
     }
 
+    @Override
     public void init() {
     }
 
-    protected void poll(ConsumerRecords<K, V> records) {
+    protected void process(ConsumerRecords<K, V> records) {
     }
 
+    @Override
     public void release() {
+        super.release();
     }
 
-    public void shudown() {
-        this.running = false;
+    @Override
+    public void shutdown() {
+        super.shutdown();
     }
 
+    @Override
     public void run() {
         try {
             this.consumer.subscribe(this.topics);
@@ -68,7 +71,7 @@ public class ConsumerLoop<K, V>  implements Runnable {
                 ConsumerRecords<K, V> records = consumer.poll(Long.MAX_VALUE);
 
                 //  handle records result as polling ...
-                poll(records);
+                process(records);
 
             } while (this.running);
         }
