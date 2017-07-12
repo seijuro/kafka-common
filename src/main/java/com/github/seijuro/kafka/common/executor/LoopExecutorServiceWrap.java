@@ -42,7 +42,7 @@ public class LoopExecutorServiceWrap {
      *
      * @param service
      * @param size
-     * @param awaitMillis
+     * @param millis
      */
     protected LoopExecutorServiceWrap(ExecutorService service, int size, long millis) {
         this.poolSize = size > 0 ? size : 1;

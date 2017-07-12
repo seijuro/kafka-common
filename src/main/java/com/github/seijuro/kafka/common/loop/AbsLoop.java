@@ -1,14 +1,14 @@
 package com.github.seijuro.kafka.common.loop;
 
 /**
- * Created by myungjoonlee on 2017. 7. 12..
+ * Created by seijuro
  */
 public abstract class AbsLoop implements Runnable {
     /**
      * Instance Properties
      */
     protected boolean running = true;
-    protected int id;
+    private final int id;
 
     public AbsLoop(int id) {
         this.id = id;
@@ -27,7 +27,6 @@ public abstract class AbsLoop implements Runnable {
     }
 
     public void init() throws Exception {
-
     }
 
     public void release() {
