@@ -1,7 +1,7 @@
-# kafka producer & consumer skeleton designed for multi-thread
+# kafka producer & consumer skeleton
 
-This project includes Skeleton Kafka producer & consumer class & LoopExecutorServiceWrap.
-Skelton producer & consumer is useful to make Kafka producer & consumer running on multi-thread environment.
+1. This project includes Skeleton Kafka producer & consumer class & LoopExecutorServiceWrap.
+2. Skeleton kafka producer & consumer is designed for multi-thread.
 
 # Usage
 
