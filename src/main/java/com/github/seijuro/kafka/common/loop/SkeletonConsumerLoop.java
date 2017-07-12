@@ -32,8 +32,6 @@ public abstract class SkeletonConsumerLoop<K, V>  extends AbsLoop {
         this.props = props;
         this.topics = topics;
 
-        System.out.println(String.format("id : %d, props : %s, topics :%s", id, props, topics));
-
         this.consumer = new KafkaConsumer(this.props);
     }
 

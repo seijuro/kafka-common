@@ -84,8 +84,6 @@ public abstract class SkeletonProducerLoop<K, V> extends AbsLoop {
             int counnt = 0;
             Queue<ProducerRecord<K, V>> messages = read();
 
-            System.out.println("Reading data is done successfully...");
-
             assert (messages != null);
 
             counnt = messages.size();
@@ -93,8 +91,6 @@ public abstract class SkeletonProducerLoop<K, V> extends AbsLoop {
             for (ProducerRecord<K, V> record = messages.poll(); record != null; record = messages.poll()) {
                 send(record);
             }
-
-            System.out.println("Sending data is done successfully...");
 
             messages.clear();
             messages = null;
