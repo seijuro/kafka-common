@@ -1,12 +1,9 @@
 package com.github.seijuro.kafka.common.loop;
 
 
-import org.apache.commons.lang3.time.DateUtils;
-import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.KafkaException;
-import org.apache.kafka.common.config.ConfigException;
 
 import java.util.LinkedList;
 import java.util.Properties;
@@ -15,7 +12,7 @@ import java.util.Queue;
 /**
  * Created by myungjoonlee on 2017. 7. 4..
  */
-public abstract class SkeletonProducerLoop<K, V> extends AbsLoop {
+public abstract class SkeletonProducerLoop<K, V> extends AbstractLoop {
     /**
      * Instance Properties
      */
@@ -105,7 +102,7 @@ public abstract class SkeletonProducerLoop<K, V> extends AbsLoop {
      * Runntable Interface method
      */
     public void run() {
-        do {
+        while (isRunning()) {
             Queue<ProducerRecord<K, V>> messages = read();
 
             assert (messages != null);
@@ -120,7 +117,7 @@ public abstract class SkeletonProducerLoop<K, V> extends AbsLoop {
             messages = null;
 
             sent(count);
-        } while (isRunning());
+        }
 
         release();
     }
