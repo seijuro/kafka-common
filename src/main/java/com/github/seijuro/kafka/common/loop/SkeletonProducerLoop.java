@@ -10,7 +10,7 @@ import java.util.Properties;
 import java.util.Queue;
 
 /**
- * Created by myungjoonlee on 2017. 7. 4..
+ * Created by seijuro
  */
 public abstract class SkeletonProducerLoop<K, V> extends AbstractLoop {
     /**
@@ -41,6 +41,9 @@ public abstract class SkeletonProducerLoop<K, V> extends AbstractLoop {
     protected Properties properties() { return this.props; }
     protected String topic() { return this.topic; }
 
+	/**
+	 * producer
+	 */
     protected KafkaProducer<K, V> producer() {
         return this.producer;
     }
