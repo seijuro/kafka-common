@@ -1,6 +1,6 @@
 package com.github.seijuro.kafka.common.executor;
 
-import com.github.seijuro.kafka.common.loop.AbsLoop;
+import com.github.seijuro.kafka.common.loop.AbstractLoop;
 import org.apache.commons.lang3.time.DateUtils;
 
 import java.util.ArrayList;
@@ -13,11 +13,11 @@ import java.util.concurrent.TimeUnit;
  * Created by seijuro
  */
 public class LoopExecutorServiceWrap {
-    protected static final long DEFAULT_TERMINATE_WAIT_MILLIS = DateUtils.MILLIS_PER_SECOND * 5;
+    protected static final long DEFAULT_TERMINATE_WAIT_MILLIS = DateUtils.MILLIS_PER_MINUTE;
 
     protected final int poolSize;
     protected final ExecutorService executor;
-    protected final List<AbsLoop> loops;
+    protected final List<AbstractLoop> loops;
     protected final Thread hookShutdownThread;
     protected final long awaitMillis;
 
@@ -53,7 +53,7 @@ public class LoopExecutorServiceWrap {
         this.hookShutdownThread = new Thread() {
             @Override
             public void run() {
-                for (AbsLoop loop : loops) {
+                for (AbstractLoop loop : loops) {
                     loop.shutdown();
                 }
 
@@ -65,19 +65,14 @@ public class LoopExecutorServiceWrap {
                     excp.printStackTrace();
                 }
 
-                for (AbsLoop loop : loops) {
-                    loop.release();
-                }
-
                 loops.clear();
             }
         };
 
         Runtime.getRuntime().addShutdownHook(this.hookShutdownThread);
-
     }
 
-    public void submit(AbsLoop task) {
+    public void submit(AbstractLoop task) {
         try {
             task.init();
             this.executor.submit(task);
@@ -90,13 +85,13 @@ public class LoopExecutorServiceWrap {
         }
     }
 
-    public void submit(AbsLoop[] tasks) {
-        for (AbsLoop task : tasks) {
+    public void submit(AbstractLoop[] tasks) {
+        for (AbstractLoop task : tasks) {
             submit(task);
         }
     }
 
-    public void execute(AbsLoop task) {
+    public void execute(AbstractLoop task) {
         try {
             task.init();
             this.executor.execute(task);
@@ -109,8 +104,8 @@ public class LoopExecutorServiceWrap {
         }
     }
 
-    public void execute(AbsLoop[] tasks) {
-        for (AbsLoop task : tasks) {
+    public void execute(AbstractLoop[] tasks) {
+        for (AbstractLoop task : tasks) {
             this.execute(task);
         }
     }
